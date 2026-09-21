@@ -3,7 +3,7 @@ name: Generate GitHub Release Asset
 on:
   push:
     tags:
-      - 'v*' # Automatically triggers when you push a tag version like v1.0.0
+      - 'v*' # Automatically triggers when you push a tag version like v1.0.1
 
 jobs:
   build-and-release:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout Code Repository
       uses: actions/checkout@v4
+      with:
+        ref: master # FIX: Explicitly forces the checker to read from your master branch layout
 
     - name: Setup .NET SDK Compiler
       uses: actions/setup-dotnet@v4
@@ -27,9 +29,9 @@ jobs:
     - name: Bundle Archive Staging Canvas
       run: |
         mkdir -p staging_dir
-        # Copy files into your staging canvas folder
+        # Fixed Copy: Pulls the library directly and renames it to StaggerScaler.dll flatly
         cp bin/Release/net462/DynamicParryScaling.dll staging_dir/StaggerScaler.dll
-        cp README.md staging_dir/
+        cp readme.md staging_dir/README.md
         
         # Zip up the compiled binary along with the readme file
         cd staging_dir && zip -r ../StaggerScaler_${{ github.ref_name }}.zip .
@@ -39,4 +41,4 @@ jobs:
       with:
         files: StaggerScaler_${{ github.ref_name }}.zip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Built-in token, no configuration needed!
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
