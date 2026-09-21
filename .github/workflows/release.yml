@@ -1,0 +1,42 @@
+name: Generate GitHub Release Asset
+
+on:
+  push:
+    tags:
+      - 'v*' # Automatically triggers when you push a tag version like v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK Compiler
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore Project NuGet Dependencies
+      run: dotnet restore
+
+    - name: Compile Stagger Scaler Binary
+      run: dotnet build --configuration Release
+
+    - name: Bundle Archive Staging Canvas
+      run: |
+        mkdir -p staging_dir
+        # Copy files into your staging canvas folder
+        cp bin/Release/net462/DynamicParryScaling.dll staging_dir/StaggerScaler.dll
+        cp README.md staging_dir/
+        
+        # Zip up the compiled binary along with the readme file
+        cd staging_dir && zip -r ../StaggerScaler_${{ github.ref_name }}.zip .
+
+    - name: Generate Production Release Page and Attach Zip
+      uses: softprops/action-gh-release@v2
+      with:
+        files: StaggerScaler_${{ github.ref_name }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Built-in token, no configuration needed!
