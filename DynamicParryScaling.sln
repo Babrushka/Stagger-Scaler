@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicParryScaling", "DynamicParryScaling.csproj", "{0CBAEE7E-676C-4581-8976-103460F52152}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0CBAEE7E-676C-4581-8976-103460F52152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CBAEE7E-676C-4581-8976-103460F52152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CBAEE7E-676C-4581-8976-103460F52152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CBAEE7E-676C-4581-8976-103460F52152}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C40838AA-5EC9-43AC-8D79-6B674C922639}
+	EndGlobalSection
+EndGlobal
