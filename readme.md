@@ -54,10 +54,10 @@ The config file generates automatically at `<Valheim>/BepInEx/config/babrushkas.
 
 ### `[Difficulty]`
 
-* **`TargetDifficultyScale`** (Default: `1.0`): The defensive difficulty tier you WANT your shield blocks and stagger thresholds to calculate against. Set to your world setting to handle player-count scaling only.
+* **`DefenceTargetDifficultyScale`** (Default: `1.0`): The defensive difficulty tier you WANT your shield blocks and stagger thresholds to calculate against. Set to your world setting to handle player-count scaling only.
   * `0.5` = Very Easy | `1.0` = Normal (*Recommended*) | `2.0` = Very Hard
 * **`AttackTargetDifficultyScale`** (Default: `1.0`): The offensive difficulty tier you WANT your attacks to deal stagger damage against. Setting this to `1.0` means your weapons break monster posture at standard Normal Solo speeds.
-  * `0.5` = Very Easy (Fills bar faster) | `1.0` = Normal | `2.0` = Very Hard (Fills bar slower)
+  * `1.25` = Very Easy (Fills bar faster) | `1.0` = Normal | `0.7` = Very Hard (Fills bar slower)
 
 ### `[Paste your world settings here]`
 
