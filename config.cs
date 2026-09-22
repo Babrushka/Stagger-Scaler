@@ -46,7 +46,7 @@ namespace DynamicParryScaling
                 "Enables offensive stagger scaling, making your attacks fill enemy stagger bars faster or slower based on config.");
 
             // --- Defensive Difficulty Target ---
-            ConfigTargetDifficulty = Config.Bind("Difficulty", "TargetDifficultyScale", 1.0f,
+            ConfigTargetDifficulty = Config.Bind("Difficulty", "DefefenceTargetDifficultyScale", 1.0f,
                 "The difficulty tier you WANT your shield blocks and stagger thresholds to calculate against.\n" +
                 "0.5 = Very Easy | 1.0 = Normal | 2.0 = Very Hard");
 
@@ -54,7 +54,7 @@ namespace DynamicParryScaling
             ConfigAttackTargetDifficulty = Config.Bind("Difficulty", "AttackTargetDifficultyScale", 1.0f,
                 "The difficulty tier you WANT your attacks to deal stagger damage against.\n" +
                 "Setting this to 1.0 means your weapon will fill an enemy's posture bar at standard Normal Solo speeds, ignoring world sliders.\n" +
-                "0.5 = Very Easy (Fills bar faster) | 1.0 = Normal | 2.0 = Very Hard (Fills bar much slower)");
+                "1.25 = Very Easy (Fills bar faster) | 1.0 = Normal | 0.7 = Very Hard (Fills bar much slower)");
 
             // --- Debugging & Sandbox Emulation ---
             ConfigEnableDebugLogs = Config.Bind("Debug", "EnableLogs", false,

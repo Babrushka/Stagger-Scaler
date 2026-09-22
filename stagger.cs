@@ -81,7 +81,7 @@ namespace DynamicParryScaling
                 float attackTargetDifficulty = DynamicParryScalingPlugin.ConfigAttackTargetDifficulty.Value;
 
                 // Skip if no modifiers apply to your attack sequence
-                if (monsterHpScalingFactor <= 1.0f && currentWorldDifficulty <= attackTargetDifficulty) return;
+                //if (monsterHpScalingFactor <= 1.0f && currentWorldDifficulty <= attackTargetDifficulty) return;
 
                 float originalDamage = damage;
 
