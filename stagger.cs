@@ -24,7 +24,7 @@ namespace DynamicParryScaling
                 float currentWorldDifficulty = DynamicParryScalingPlugin.ConfigCurrentWorldDifficulty.Value;
                 float targetDifficulty = DynamicParryScalingPlugin.ConfigTargetDifficulty.Value;
 
-                if (scalingFactor <= 1.0f && currentWorldDifficulty <= targetDifficulty) return;
+                //if (scalingFactor <= 1.0f && currentWorldDifficulty <= targetDifficulty) return;
 
                 bool isBlocking = player.IsBlocking();
 

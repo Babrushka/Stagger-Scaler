@@ -16,7 +16,7 @@ namespace DynamicParryScaling
         public static ConfigEntry<float> ConfigTargetDifficulty;
         public static ConfigEntry<bool> ConfigEnableDebugLogs;
         public static ConfigEntry<bool> ConfigGlobalSwitch;
-        public static ConfigEntry<int> ConfigSimulatedPlayers;
+        public static ConfigEntry<float> ConfigSimulatedPlayers;
         public static ConfigEntry<bool> ConfigEnableShieldScaling;
         public static ConfigEntry<bool> ConfigEnableArmorScaling;
 
@@ -57,11 +57,12 @@ namespace DynamicParryScaling
                 "Setting this to 1.0 means your weapon will fill an enemy's posture bar at standard Normal Solo speeds, ignoring world sliders.\n" +
                 "1.25 = Very Easy (Fills bar faster) | 1.0 = Normal | 0.7 = Very Hard (Fills bar much slower)");
 
+
             // --- Debugging & Sandbox Emulation ---
             ConfigEnableDebugLogs = Config.Bind("Debug", "EnableLogs", false,
                 "Set to true to print scaling numbers directly into the F5 game console.");
 
-            ConfigSimulatedPlayers = Config.Bind("Debug", "SimulatedPlayerCount", 0,
+            ConfigSimulatedPlayers = Config.Bind("Debug", "SimulatedPlayerCount", 0.0f,
                 "Forces a mocked player count for testing. Set to 0 for normal server behavior (uses proximity loops). Max cap is 4.");
 
             // --- Server Specification Environment Settings ---

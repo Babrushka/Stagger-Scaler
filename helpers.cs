@@ -24,7 +24,7 @@ namespace DynamicParryScaling
 
         public static float GetMultiplayerScaleFactor(Player player)
         {
-            int nearbyPlayersCount = 0;
+            float nearbyPlayersCount = 0;
 
             if (DynamicParryScalingPlugin.ConfigSimulatedPlayers.Value > 0)
             {
