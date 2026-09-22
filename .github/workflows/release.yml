@@ -13,12 +13,18 @@ jobs:
     - name: Checkout Code Repository
       uses: actions/checkout@v4
       with:
-        ref: master # FIX: Explicitly forces the checker to read from your master branch layout
+        ref: master
 
     - name: Setup .NET SDK Compiler
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
+
+    - name: Download Valheim Game Assemblies for Build
+      run: |
+        mkdir -p libs
+        # Downloads a stripped version of assembly_valheim.dll for compilation compatibility
+        curl -L -o libs/assembly_valheim.dll https://github.com
 
     - name: Restore Project NuGet Dependencies
       run: dotnet restore
@@ -29,8 +35,7 @@ jobs:
     - name: Bundle Archive Staging Canvas
       run: |
         mkdir -p staging_dir
-        # Fixed Copy: Pulls the library directly and renames it to StaggerScaler.dll flatly
-        cp bin/Release/net462/DynamicParryScaling.dll staging_dir/StaggerScaler.dll
+        cp bin/Release/netstandard2.1/DynamicParryScaling.dll staging_dir/StaggerScaler.dll
         cp readme.md staging_dir/README.md
         
         # Zip up the compiled binary along with the readme file
