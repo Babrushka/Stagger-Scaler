@@ -12,6 +12,7 @@ namespace DynamicParryScaling
         public static ConfigEntry<float> ConfigCheckRadius;
         public static ConfigEntry<float> ConfigDamagePerPlayer;
         public static ConfigEntry<float> ConfigCurrentWorldDifficulty;
+        public static ConfigEntry<float> ConfigPlayerDamageMult;
         public static ConfigEntry<float> ConfigTargetDifficulty;
         public static ConfigEntry<bool> ConfigEnableDebugLogs;
         public static ConfigEntry<bool> ConfigGlobalSwitch;
@@ -64,9 +65,12 @@ namespace DynamicParryScaling
                 "Forces a mocked player count for testing. Set to 0 for normal server behavior (uses proximity loops). Max cap is 4.");
 
             // --- Server Specification Environment Settings ---
-            ConfigCurrentWorldDifficulty = Config.Bind("Paste your world settings here", "CurrentWorldDifficulty", 1.0f,
+            ConfigCurrentWorldDifficulty = Config.Bind("Paste your world settings here", "CurrentMobDamageMultipler", 1.0f,
                 "The actual difficulty scaling currently running on your server.\n" +
                 "0.5 = Very Easy | 1.0 = Normal | 2.0 = Very Hard");
+            ConfigPlayerDamageMult = Config.Bind("Paste your world settings here", "CurrentPlayerDamageMultipler", 1.0f,
+                "The actual difficulty scaling currently running on your server.\n" +
+                "1.25 = Very Easy | 1.1 = Easy | 1.0 = Normal | | 0.85 = Hard | 0.7 = Very Hard");
 
             ConfigCheckRadius = Config.Bind("Paste your world settings here", "DetectionRadius", 100f,
                 "The horizontal radius (in meters) to check for nearby players.");

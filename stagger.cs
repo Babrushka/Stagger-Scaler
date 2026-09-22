@@ -77,7 +77,7 @@ namespace DynamicParryScaling
                 // Calculate the true vanilla monster HP modifier (+30% per extra player)
                 float monsterHpScalingFactor = 1.0f + (extraPlayers * (DynamicParryScalingPlugin.ConfigHpBonusPerPlayerPercent.Value / 100f));
 
-                float currentWorldDifficulty = DynamicParryScalingPlugin.ConfigCurrentWorldDifficulty.Value;
+                float currentWorldDifficulty = DynamicParryScalingPlugin.ConfigPlayerDamageMult.Value;
                 float attackTargetDifficulty = DynamicParryScalingPlugin.ConfigAttackTargetDifficulty.Value;
 
                 // Skip if no modifiers apply to your attack sequence
@@ -86,8 +86,8 @@ namespace DynamicParryScaling
                 float originalDamage = damage;
 
                 // --- THE OFFENSIVE MATHEMATICAL ENGINE ---
-                float modifiedAttackStagger = (damage * monsterHpScalingFactor * currentWorldDifficulty) / attackTargetDifficulty;
-                float attackScaleModifier = (monsterHpScalingFactor * currentWorldDifficulty) / attackTargetDifficulty;
+                float modifiedAttackStagger = (damage * attackTargetDifficulty) / currentWorldDifficulty * monsterHpScalingFactor;
+                float attackScaleModifier = (attackTargetDifficulty)/ currentWorldDifficulty * monsterHpScalingFactor;
 
                 // FIX: Dynamically extract the exact native limit percentage directly from the monster instance!
                 float staggerFactor = __instance.m_staggerDamageFactor;

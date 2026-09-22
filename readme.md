@@ -61,7 +61,8 @@ The config file generates automatically at `<Valheim>/BepInEx/config/babrushkas.
 
 ### `[Paste your world settings here]`
 
-* **`CurrentWorldDifficulty`** (Default: `1.0`): Set this to match the actual difficulty scaling currently running on your world slider menu (`0.5`, `1.0`, `1.5`, `2.0`). Required for precise calibration math.
+* **`CurrentMobDamageMultipler`** (Default: `1.0`): Set this to match the actual difficulty scaling currently running on your world slider menu (`0.5`, `0.75`, `1.0`, `1.5`, `2.0`). Required for precise calibration math.
+* **`CurrentPlayerDamageMultipler`** (Default: `1.0`): Set this to match the actual difficulty scaling currently running on your world slider menu (`1.25` = very easy, `1.1`, `1.0`, `0.85`, `0.7` = extra hard). Required for precise calibration math.
 * **`DetectionRadius`** (Default: `100.0`): The horizontal radius (in meters) to scan for nearby players to track multiplayer group presence.
 * **`DamagePerPlayerPercent`** (Default: `4.0`): The percentage of enemy damage scaling added per extra player (Vanilla game default is 4%).
 * **`HpBonusPerPlayerPercent`** (Default: `30.0`): The percentage of extra health monsters gain per additional nearby player in vanilla Valheim (Vanilla default is 30%).
