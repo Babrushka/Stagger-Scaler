@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Babrushka</Authors>
+    <AssemblyName>StaggerScaler</AssemblyName>
+    <ApplicationManifest>manifest.json</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+   	<Reference Include="assembly_valheim">
+	  <HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
+	  <HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">libs\assembly_valheim.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEngine">
+		<HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll')">C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll</HintPath>
+		<HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll')">libs\UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="0Harmony">
+		<HintPath Condition="Exists('C:\Games\Valheim\BepInEx\core\0Harmony.dll')">C:\Games\Valheim\BepInEx\core\0Harmony.dll</HintPath>
+		<HintPath Condition="!Exists('C:\Games\Valheim\BepInEx\core\0Harmony.dll')">libs\0Harmony.dll</HintPath>
+	</Reference>
+	<Reference Include="BepInEx">
+		<HintPath Condition="Exists('C:\Games\Valheim\BepInEx\core\BepInEx.dll')">C:\Games\Valheim\BepInEx\core\BepInEx.dll</HintPath>
+		<HintPath Condition="!Exists('C:\Games\Valheim\BepInEx\core\BepInEx.dll')">libs\BepInEx.dll</HintPath>
+	</Reference>
+	<Reference Include="BepInEx">
+		<HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll')">C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+		<HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll')">libs\UnityEngine.CoreModule.dlll</HintPath>
+	</Reference>
+  </ItemGroup>
+</Project>

@@ -36,7 +36,7 @@ Instead of altering baseline enemy values or nerfing AI properties globally, the
 This is a **dual-sided mod**. It must be installed on **both the server and all connecting clients** for network calculation variables to stay synchronized without lag or desynchronization.
 
 1. Ensure **BepInEx Pack for Valheim** is properly installed.
-2. Drop the **`DynamicParryScaling.dll`** file into your `<Valheim>/BepInEx/plugins/` directory on both your local PC and your dedicated server.
+2. Drop the **`StaggerScaler.dll`** file into your `<Valheim>/BepInEx/plugins/` directory on both your local PC and your dedicated server.
 3. Start up the game once to automatically generate your personalized configuration file layout.
 
 ---
