@@ -54,20 +54,12 @@ The config file generates automatically at `<Valheim>/BepInEx/config/babrushkas.
 
 ### `[Difficulty]`
 
-* **`DefenceTargetDifficultyScale`** (Default: `1.0`): The defensive difficulty tier you WANT your shield blocks and stagger thresholds to calculate against. Set to your world setting to handle player-count scaling only.
-  * `0.5` = Very Easy | `1.0` = Normal (*Recommended*) | `2.0` = Very Hard
-* **`AttackTargetDifficultyScale`** (Default: `1.0`): The offensive difficulty tier you WANT your attacks to deal stagger damage against. Setting this to `1.0` means your weapons break monster posture at standard Normal Solo speeds.
-  * `1.25` = Very Easy (Fills bar faster) | `1.0` = Normal | `0.7` = Very Hard (Fills bar slower)
-
-### `[Paste your world settings here]`
-
-* **`CurrentMobDamageMultipler`** (Default: `1.0`): Set this to match the actual difficulty scaling currently running on your world slider menu (`0.5`, `0.75`, `1.0`, `1.5`, `2.0`). Required for precise calibration math.
-* **`CurrentPlayerDamageMultipler`** (Default: `1.0`): Set this to match the actual difficulty scaling currently running on your world slider menu (`1.25` = very easy, `1.1`, `1.0`, `0.85`, `0.7` = extra hard). Required for precise calibration math.
-* **`DetectionRadius`** (Default: `100.0`): The horizontal radius (in meters) to scan for nearby players to track multiplayer group presence.
-* **`DamagePerPlayerPercent`** (Default: `4.0`): The percentage of enemy damage scaling added per extra player (Vanilla game default is 4%).
-* **`HpBonusPerPlayerPercent`** (Default: `30.0`): The percentage of extra health monsters gain per additional nearby player in vanilla Valheim (Vanilla default is 30%).
+* **`Desired Enemy Damage Multiplier`** (Default: `1.0`): The defensive difficulty tier you WANT your shield blocks and stagger thresholds to calculate against. Set to your world setting to handle player-count scaling only.
+  * `0.5` = Very Easy | `0.75` = Easy | `1.0` = Normal (*Recommended*) | `1.5` = Hard | `2.0` = Very Hard
+* **`Desired Player Damage Multiplier`** (Default: `1.0`): The offensive difficulty tier you WANT your attacks to deal stagger damage against. Setting this to `1.0` means your weapons break monster posture at standard Normal Solo speeds.
+  * `1.25` = Very Easy (Fills bar faster) | `1.1` = Easy | `1.0` = Normal | `0.85` = Hard| `0.7` = Very Hard (Fills bar slower)
 
 ### `[Debug]`
 
-* **`EnableLogs`** (Default: `false`): Set to `true` to print live downscaling math ratios, raw `m_staggerDamageFactor` coefficients, and live posture values directly into the F5 game console interface.
-* **`SimulatedPlayerCount`** (Default: `0`): Forces a mocked player count for testing in singleplayer. Set to `0` for normal live server operations. Max cap is `4`.
+* **`EnableLogs`** (Default: `false`): Set to `true` to print live downscaling math ratios, and live posture values directly into the F5 game console interface.
+* **`SimulatedPlayerCount`** (Default: `0`): Forces a mocked player count for testing in singleplayer. Set to `0` for normal live server operations. `1` Means 1 extra player will be added, besides your character offering +4% dmg and +30%HP to mobs. Max cap is `4`.
