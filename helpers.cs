@@ -32,5 +32,61 @@ namespace DynamicParryScaling
 
             return nearbyPlayersCount;
         }
+        public static float GetEquippedMaxBlock(Player player)
+        {
+            if (player == null) return 0f;
+
+            // Correct properties for accessing equipped items
+            ItemDrop.ItemData leftItem = player.LeftItem;
+            ItemDrop.ItemData rightItem = player.RightItem;
+
+            float skillFactor = player.GetSkillFactor(Skills.SkillType.Blocking);
+
+            // 1. Check Shield (Left hand)
+            if (leftItem != null && leftItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Shield)
+            {
+                return leftItem.GetBlockPower(leftItem.m_quality, skillFactor);
+            }
+
+            // 2. Check 2-Handed Weapon (Usually sits in right hand slot, left hand is null)
+            if (rightItem != null && rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.TwoHandedWeapon)
+            {
+                return rightItem.GetBlockPower(rightItem.m_quality, skillFactor);
+            }
+
+            // 3. Check 1-Handed Weapon fallback
+            if (rightItem != null && rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon)
+            {
+                return rightItem.GetBlockPower(rightItem.m_quality, skillFactor);
+            }
+
+            return 0f;
+        }
+
+        // Returns the fully scaled block power IF a parry is successfully triggered
+        public static float GetEquippedMaxParryBlock(Player player)
+        {
+            if (player == null) return 0f;
+
+            ItemDrop.ItemData leftItem = player.LeftItem;
+            ItemDrop.ItemData rightItem = player.RightItem;
+
+            float baseBlock = GetEquippedMaxBlock(player);
+            if (baseBlock <= 0f) return 0f;
+
+            // Apply parry multiplier based on what is actively being used to block
+            if (leftItem != null && leftItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Shield)
+            {
+                return baseBlock * leftItem.m_shared.m_timedBlockBonus;
+            }
+
+            if (rightItem != null && (rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.TwoHandedWeapon ||
+                                      rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon))
+            {
+                return baseBlock * rightItem.m_shared.m_timedBlockBonus;
+            }
+
+            return baseBlock;
+        }
     }
 }
