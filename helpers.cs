@@ -22,40 +22,15 @@ namespace DynamicParryScaling
             }
         }
 
-        public static float GetMultiplayerScaleFactor(Player player)
+        public static float GetNearbyPlayersCount(Player player)
         {
             float nearbyPlayersCount = 0;
 
-            if (DynamicParryScalingPlugin.ConfigSimulatedPlayers.Value > 0)
-            {
-                nearbyPlayersCount = DynamicParryScalingPlugin.ConfigSimulatedPlayers.Value;
-            }
-            else
-            {
-                float radius = DynamicParryScalingPlugin.ConfigCheckRadius.Value;
-                List<Player> allPlayers = Player.GetAllPlayers();
+            nearbyPlayersCount = Game.instance.GetPlayerDifficulty(player.transform.position) - 1.0f;
+            if (DynamicParryScalingPlugin.ConfigSimulatedPlayers.Value > 0) nearbyPlayersCount = DynamicParryScalingPlugin.ConfigSimulatedPlayers.Value;
+            if (nearbyPlayersCount > 4) nearbyPlayersCount = 4.0f;
 
-                foreach (Player otherPlayer in allPlayers)
-                {
-                    if (otherPlayer != player && !otherPlayer.IsDead())
-                    {
-                        Vector3 pos1 = player.transform.position;
-                        Vector3 pos2 = otherPlayer.transform.position;
-                        pos1.y = 0f;
-                        pos2.y = 0f;
-
-                        if (Vector3.Distance(pos1, pos2) <= radius)
-                        {
-                            nearbyPlayersCount++;
-                        }
-                    }
-                }
-            }
-
-            if (nearbyPlayersCount > 4) nearbyPlayersCount = 4;
-
-            float percentModifier = DynamicParryScalingPlugin.ConfigDamagePerPlayer.Value / 100f;
-            return 1.0f + (nearbyPlayersCount * percentModifier);
+            return nearbyPlayersCount;
         }
     }
 }
