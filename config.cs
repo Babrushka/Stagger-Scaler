@@ -5,7 +5,7 @@ using HarmonyLib;
 
 namespace DynamicParryScaling
 {
-    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.2.0")]
+    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.4.0")]
     public class DynamicParryScalingPlugin : BaseUnityPlugin
     {
         // --- Configuration Entries ---

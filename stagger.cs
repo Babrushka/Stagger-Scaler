@@ -20,6 +20,7 @@ namespace DynamicParryScaling
 
         // Tracks whether the shield phase has already run for a specific player instance on this frame
         public static readonly ConditionalWeakTable<Player, StrongBox<bool>> ShieldProcessedTracker = new ConditionalWeakTable<Player, StrongBox<bool>>();
+        public static readonly ConditionalWeakTable<Player, StrongBox<float>> ShieldDamageStorageTracker = new ConditionalWeakTable<Player, StrongBox<float>>();
     }
 
     [HarmonyPatch(typeof(Humanoid), "BlockAttack")]
@@ -76,7 +77,7 @@ namespace DynamicParryScaling
                 blockingBox.Value = false; 
 
                 var parryBox = DamageContext.CanParryTracker.GetOrCreateValue(player); 
-                parryBox.Value = false; 
+                parryBox.Value = false;
             }
         }
     }
@@ -123,8 +124,8 @@ namespace DynamicParryScaling
             // =========================================================================
             if (__instance is Player player) 
             {
-                if (attacker != null && !attackerIsMonster) return; 
-
+                if (attacker != null && !attackerIsMonster) return;
+                if (damage <= 0.0f) return;
                 string realPlayerName = player.GetPlayerName(); 
                 float nearbyPlayersCount = HelperFunctions.GetNearbyPlayersCount(player); 
                 float MPEnemyDamageScalingFactor = nearbyPlayersCount * Game.instance.m_damageScalePerPlayer + 1.0f; 
@@ -154,7 +155,10 @@ namespace DynamicParryScaling
                     float soloPureDmg = revHit / DamageReduceFactor; 
                     float reducedByShieldDmg = block >= soloPureDmg / 2.0f 
                         ? (soloPureDmg * soloPureDmg) / (4.0f * block) 
-                        : Mathf.Max(0f, soloPureDmg - block); 
+                        : Mathf.Max(0f, soloPureDmg - block);
+
+                    var shieldDamageBox = DamageContext.ShieldDamageStorageTracker.GetOrCreateValue(player);
+                    shieldDamageBox.Value = reducedByShieldDmg;
 
                     float modstaggerIncrease = (reducedByShieldDmg / (player.GetMaxHealth() * 0.4f)) * 100f; 
                     float vanillastaggerIncrease = (damage / (player.GetMaxHealth() * 0.4f)) * 100f; 
@@ -176,25 +180,42 @@ namespace DynamicParryScaling
                 else 
                 {
                     // PASSIVE ARMOR PATH
-                    float bodyArmor = player.GetBodyArmor(); 
+                    float bodyArmor = player.GetBodyArmor();
 
-                    // SUCCESSIVE INPUT COUPLING: By using the active 'damage' parameter variable directly here, 
-                    // if the shield altered it upstream, the armor phase naturally inherits the scaled bleed-through!
-                    float revHit = damage < bodyArmor 
-                        ? Mathf.Sqrt(damage * 4.0f * bodyArmor) 
-                        : damage + bodyArmor; 
+                    float inputDamageVisualLog = damage;
+                    //If a shield phase ran right before this,
+                    // the bleed-through damage IS our raw hitting damage (revHit).
+                    float revHit;
+                    float reducedHit;
 
-                    float reducedHit = revHit / DamageReduceFactor; 
+                    revHit = damage < bodyArmor
+                        ? Mathf.Sqrt(damage * 4.0f * bodyArmor)
+                        : damage + bodyArmor;
+
+                    bool restoredPhase = false;
+                    if (DamageContext.ShieldDamageStorageTracker.TryGetValue(player, out var storedShieldDmgBox))
+                    {
+                        reducedHit = storedShieldDmgBox.Value;
+                        restoredPhase = true;
+                        DamageContext.ShieldDamageStorageTracker.Remove(player);
+                    }
+                    else
+                    {
+                        reducedHit = revHit / DamageReduceFactor;
+                        // Direct hit fallback: Reverse-engineer the full raw hit from vanilla bleed-through
+                    }
+                
                     float armorReducedDmg = bodyArmor >= reducedHit / 2.0f 
-? (reducedHit * reducedHit) / (4.0f * bodyArmor) 
-: Mathf.Max(0f, reducedHit - bodyArmor); 
+                        ? (reducedHit * reducedHit) / (4.0f * bodyArmor) 
+                        : Mathf.Max(0f, reducedHit - bodyArmor); 
                     float modstaggerIncrease = (armorReducedDmg / (player.GetMaxHealth() * 0.4f)) * 100f; 
                     float vanillastaggerIncrease = (damage / (player.GetMaxHealth() * 0.4f)) * 100f; 
                     DamageContext.LogTracker.TryGetValue(player, out string existingLog); 
                                                                                           // Concatenate the armor data thread-safely behind the active shield string record entry
                     string combinedLog = (existingLog ?? "") +
-                        $"[StaggerScaler] [{realPlayerName}]  Passed through armor dmg: {damage:F1}; Pure full hit dmg (without armor) must be: {revHit:F1};\n" + 
+                        $"[StaggerScaler] [{realPlayerName}]  <ARMOR> Reduced by armor game dmg comes to stagger: {damage:F1}; Pure full hit dmg `revHit` (without armor) must be: {revHit:F1};\n" + 
                         $"DamageMult multiplayer*difficulty = {DamageReduceFactor:F2}; Body Armor: {bodyArmor:F1};\n" + 
+                        $"Restored revHit from shield phase: {restoredPhase} (if true means next value is replaced by previous phase, instead of using revHit based on game values);\n" +
                         $"Desired pure dmg based on your target settings must be: {reducedHit:F2}; Finally reduced by armor dmg applied to stagger: {armorReducedDmg:F2}\n" + 
                         $"Vanilla stagger percentage increase: +{vanillastaggerIncrease:F0}% -> modded: +{modstaggerIncrease:F0}%\n" +
                         $"===========================================\n"; 

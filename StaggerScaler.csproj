@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="libs\**" />
+    <EmbeddedResource Remove="libs\**" />
+    <None Remove="libs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
    	<Reference Include="assembly_valheim">
 	  <HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
 	  <HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">libs\assembly_valheim.dll</HintPath>
@@ -28,9 +34,5 @@
 		<HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll')">C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
 		<HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll')">libs\UnityEngine.CoreModule.dlll</HintPath>
 	</Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="libs\" />
   </ItemGroup>
 </Project>
