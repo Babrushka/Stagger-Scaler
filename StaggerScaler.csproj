@@ -5,6 +5,15 @@
     <Authors>Babrushka</Authors>
     <AssemblyName>StaggerScaler</AssemblyName>
     <ApplicationManifest>manifest.json</ApplicationManifest>
+    <IncludeSymbols>False</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,4 +44,8 @@
 		<HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll')">libs\UnityEngine.CoreModule.dlll</HintPath>
 	</Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y &quot;C:\DynamicParryScaling\bin\Debug\netstandard2.1\StaggerScaler.dll&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;&#xA;xcopy /Y &quot;C:\DynamicParryScaling\bin\Debug\netstandard2.1\StaggerScaler.pdb&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;" />
+  </Target>
 </Project>
