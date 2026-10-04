@@ -61,7 +61,7 @@ namespace StaggerScaler
         public static void attackLog(Character p, float MPscale, float GameScale, string mobName, float mobStaggerFactor, float oldDmg, float newDmg, float vanillaStagger, float moddedStagger){
             string s = $"[StaggerScaler] [[{((Player)p).GetPlayerName()}]] <Attack> adds stagger to {mobName} (mob stagger bar is {mobStaggerFactor} of max hp)\n" +
                        $"Vanilla stagger: {oldDmg}, modded stagger: {newDmg}\n" +
-                       $"Multiplayer coef: {MPscale}, difficulty coef: {GameScale};\n" +
+                       $"Multiplayer coef (incresing by: Game coef/Applied target coef: {MPscale}, difficulty coef: {GameScale};\n" +
                        $"Stagger bar: vailla +{vanillaStagger:F0}% ---> modded +{moddedStagger:F0}%.\n" +
                        $"=========================DONE==============================\n";
             DamageContext.LogTracker.AddOrUpdate(p, s);
@@ -85,7 +85,7 @@ namespace StaggerScaler
                        $"<Virtual deapply armor rollback> Incoming vanilla damage (applied resists): {totalVanillaDmg:F2} ---> moded (mod target settings + modded shield impact + armor resist): {totalModdedDmg:F2};\n" +
                        $"<Apply armor> Vanilla stagger: vanillaStaggerDamage, modded stagger: {newDmg}\n" +
                        $"Stagger bar: vanilla +vanillaStagger% ---> modded +{moddedStagger:F0}%.\n\n" +
-                       $"Multiplayer coef: {MPscale}, difficulty coef (TargetSettings/GameSettings): {GameScale};\n" +
+                       $"Multiplayer coef (reducing by: Applied target/Game coef): {MPscale}, difficulty coef (TargetSettings/GameSettings): {GameScale};\n" +
                        $"Current stagger: currentStagger%\n" +
                        $"=========================DONE==============================\n";
             DamageContext.LogTracker.AddOrUpdate(p, old+s);

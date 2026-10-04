@@ -46,6 +46,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y &quot;C:\DynamicParryScaling\bin\Debug\netstandard2.1\StaggerScaler.dll&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;&#xA;xcopy /Y &quot;C:\DynamicParryScaling\bin\Debug\netstandard2.1\StaggerScaler.pdb&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;" />
+    <Exec Command="xcopy /Y /R &quot;$(TargetDir)StaggerScaler.dll&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;&#xA;xcopy /Y /R &quot;$(TargetDir)StaggerScaler.pdb&quot; &quot;c:\Games\Valheim\BepInEx\scripts\&quot;" />
   </Target>
 </Project>

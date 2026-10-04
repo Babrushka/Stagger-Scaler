@@ -81,7 +81,7 @@ namespace StaggerScaler
 
             float maxStagger = __instance.GetMaxHealth() * __instance.m_staggerDamageFactor;
             float staggerPercent = (totalStaggerDamage / maxStagger) * 100.0f;
-            HelperFunctions.armorLog(__instance, totalVanillaDmg, totalModdedDmg, bodyArmor, totalStaggerDamage, MPDiffCoef, DamageReduceFactor, staggerPercent);
+            HelperFunctions.armorLog(__instance, totalVanillaDmg, totalModdedDmg, bodyArmor, totalStaggerDamage, MPDiffCoef/MPdifficulty, DamageReduceFactor, staggerPercent);
 
 
 

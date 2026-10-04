@@ -8,10 +8,12 @@ namespace StaggerScaler
     {
         public static float calc(Character target, float damage, Character player)
         {
-            float MPDiffCoef = ((Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position) - 1.0f) * StaggerScalerPlugin.ConfigDesiredEnemyHealthMP.Value + 1.0f);
-            MPDiffCoef = Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position) / MPDiffCoef;
+            float MPDiffTargetCoef = ((Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position) - 1.0f) * StaggerScalerPlugin.ConfigDesiredEnemyHealthMP.Value + 1.0f);
+            float MPDiff = Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position);
+            float MPDiffCoef = 1.0f / MPDiff  / MPDiffTargetCoef;
 
-            float playerAttackScaleFactor = StaggerScalerPlugin.ConfigDesiredPlayerDamageMult.Value / Game.m_playerDamageRate * MPDiffCoef;
+            float scale1 = StaggerScalerPlugin.ConfigDesiredPlayerDamageMult.Value / Game.m_playerDamageRate;
+            float playerAttackScaleFactor = scale1 * MPDiffCoef;
             float targetDamage = damage * playerAttackScaleFactor;
             float mobStaggerFactor = target.m_staggerDamageFactor;
             if (mobStaggerFactor <= 0f) mobStaggerFactor = 0.3f;
@@ -24,7 +26,7 @@ namespace StaggerScaler
             //  HelperFunctions.LogToF5Console($"[StaggerScaler] [[{player.GetPlayerName()}]] Hitting monster '{target.m_name} (mob stagger bar mult: {target.m_staggerDamageFactor:F1}) '. Stagger dealt: vanilla {damage:F1} -> modded {targetDamage:F1}; scaleFactor:{playerAttackScaleFactor:F2};\n" +
             // $" Modded enemy stagger: +{modstaggerIncrease:F0}%; Vanilla enemy stagger: +{vanillastaggerIncrease:F0}%\n");
 
-            HelperFunctions.attackLog(player, MPDiffCoef, playerAttackScaleFactor, target.m_name, mobStaggerFactor, damage, targetDamage, vanillastaggerIncrease, modstaggerIncrease);
+            HelperFunctions.attackLog(player, MPDiffCoef, scale1, target.m_name, mobStaggerFactor, damage, targetDamage, vanillastaggerIncrease, modstaggerIncrease);
 
             return targetDamage;
         }
