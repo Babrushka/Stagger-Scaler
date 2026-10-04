@@ -8,7 +8,7 @@ using System;
 
 namespace StaggerScaler
 {
-    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.5")]
+    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.6")]
     public class StaggerScalerPlugin : BaseUnityPlugin
     {
         // --- Configuration Entries ---

@@ -8,7 +8,7 @@ namespace StaggerScaler
     {
         public static float calc(Character target, float damage, Character player)
         {
-            float MPDiffTargetCoef = ((Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position) - 1.0f) * StaggerScalerPlugin.ConfigDesiredEnemyHealthMP.Value + 1.0f);
+            float MPDiffTargetCoef = ((1.0f/Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position) - 1.0f) * StaggerScalerPlugin.ConfigDesiredEnemyHealthMP.Value + 1.0f);
             float MPDiff = Game.instance.GetDifficultyDamageScaleEnemy(target.transform.position);
             float MPDiffCoef = 1.0f / MPDiff  / MPDiffTargetCoef;
 
