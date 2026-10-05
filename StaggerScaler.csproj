@@ -6,6 +6,7 @@
     <AssemblyName>StaggerScaler</AssemblyName>
     <ApplicationManifest>manifest.json</ApplicationManifest>
     <IncludeSymbols>False</IncludeSymbols>
+    <PackageId>babrushkas.$(AssemblyName)</PackageId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +28,9 @@
 	  <HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
 	  <HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\assembly_valheim.dll')">libs\assembly_valheim.dll</HintPath>
 	</Reference>
+   	<Reference Include="ConditionalConfigSync">
+   	  <HintPath>..\Games\Valheim\BepInEx\plugins\ConditionalConfigSync.dll</HintPath>
+   	</Reference>
 	<Reference Include="UnityEngine">
 		<HintPath Condition="Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll')">C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll</HintPath>
 		<HintPath Condition="!Exists('C:\Games\Valheim\valheim_Data\Managed\UnityEngine.dll')">libs\UnityEngine.dll</HintPath>

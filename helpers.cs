@@ -42,6 +42,52 @@ namespace StaggerScaler
     }
     public static class HelperFunctions
     {
+        private const string RpcEventName = "StaggerScaler_ReceiveServerLog";
+        private static bool _rpcRegistered = false;
+
+        public static void InitNetworkHandlers()
+        {
+            if (_rpcRegistered) return;
+
+            // Clients register this listener to print any message sent directly to them
+            ZRoutedRpc.instance.Register<string>(RpcEventName, (sender, message) =>
+            {
+                LogToF5Console(message);
+            });
+
+            _rpcRegistered = true;
+        }
+
+        private static long GetCharacterPeerID(Character character)
+        {
+            if (character == null) return 0L;
+
+            ZNetView nview = character.GetComponent<ZNetView>();
+            if (nview != null && nview.IsValid())
+            {
+                // Fetches the data controller and returns the owner UID
+                return nview.GetZDO().GetOwner();
+            }
+
+            return 0L;
+        }
+
+        public static void LogToF5Console(Character player, string message)
+        {
+            if (!StaggerScalerPlugin.ConfigEnableDebugLogs.Value) return;
+
+            if (ZNet.instance != null && ZNet.instance.IsServer())
+            {
+                // IN SP: targetPeerID matches your local UID, executing instantly.
+                // IN MP: Sends the payload securely over the socket ONLY to that peer ID.
+                ZRoutedRpc.instance.InvokeRoutedRPC(player.GetOwner(), RpcEventName, message);
+            }
+            else
+            {
+                // Fallback for purely local execution paths
+                LogToF5Console(message);
+            }
+        }
         public static void LogToF5Console(string message)
         {
             if (!StaggerScalerPlugin.ConfigEnableDebugLogs.Value) return;
@@ -84,7 +130,8 @@ namespace StaggerScaler
             string s = $"[StaggerScaler] [[{((Player)p).GetPlayerName()}]] <Armor> Equipped armor: {armor:F1}\n" +
                        $"<Virtual deapply armor rollback> Incoming vanilla damage (applied resists): {totalVanillaDmg:F2} ---> moded (mod target settings + modded shield impact + armor resist): {totalModdedDmg:F2};\n" +
                        $"<Apply armor> Vanilla stagger: vanillaStaggerDamage, modded stagger: {newDmg}\n" +
-                       $"Stagger bar: vanilla +vanillaStagger% ---> modded +{moddedStagger:F0}%.\n\n" +
+                       $"Stagger bar: vanilla +vanillaStagger% ---> modded +{moddedStagger:F0}%.\n" +
+                       $"------------------------------------------------------------\n" +
                        $"Multiplayer coef (reducing by: Applied target/Game coef): {MPscale}, difficulty coef (TargetSettings/GameSettings): {GameScale};\n" +
                        $"Current stagger: currentStagger%\n" +
                        $"=========================DONE==============================\n";

@@ -97,7 +97,7 @@ namespace StaggerScaler
                     log = log.Replace("currentStagger", $"{player.GetStaggerPercentage() * 100.0f:F0}"); 
                     DamageContext.LogTracker.Remove(player);
                     DamageContext.staggerArmorTracker.Remove(player);
-                    HelperFunctions.LogToF5Console(log);
+                    HelperFunctions.LogToF5Console(player, log);
                 }
             }
         }

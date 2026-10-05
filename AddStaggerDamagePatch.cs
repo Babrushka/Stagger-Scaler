@@ -13,8 +13,9 @@ namespace StaggerScaler
     {
         [HarmonyPrefix]
         public static void Prefix(Character __instance, ref float damage, Vector3 forceDirection, HitData hit)
-        {         
+        {
 
+            if (__instance == null) return;
             if (__instance.IsPlayer())
             {
                 float maxStager = __instance.GetMaxHealth() * __instance.m_staggerDamageFactor;
@@ -35,7 +36,11 @@ namespace StaggerScaler
             }
             else
             {
-                if (hit.GetAttacker().IsPlayer() && StaggerScalerPlugin.ConfigEnableAttackScaling.Value && StaggerScalerPlugin.ConfigGlobalSwitch.Value)
+                if (hit == null) return;
+                Character attacker = hit.GetAttacker();
+                if (attacker == null) return;
+
+                if (attacker.IsPlayer() && StaggerScalerPlugin.ConfigEnableAttackScaling.Value && StaggerScalerPlugin.ConfigGlobalSwitch.Value)
                 {
                     damage = Attack.calc(__instance, damage, hit.GetAttacker());
                 }
