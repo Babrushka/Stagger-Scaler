@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace StaggerScaler
 {
-    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.6")]
+    [BepInPlugin("babrushkas.staggerscaler", "Stagger Scaler", "1.8")]
     [BepInDependency(ConditionalConfigSyncAPI.ConfigSync.PluginGuid, BepInDependency.DependencyFlags.SoftDependency)]
     public class StaggerScalerPlugin : BaseUnityPlugin
     {
@@ -17,7 +17,9 @@ namespace StaggerScaler
         public static ConfigEntry<float> ConfigDesiredEnemyDamageMult;
         public static ConfigEntry<float> ConfigDesiredEnemyDamageMP;
         public static ConfigEntry<float> ConfigDesiredEnemyHealthMP;
-        public static ConfigEntry<bool> ConfigEnableDebugLogs;
+        public static ConfigEntry<bool> ConfigEnableClientDebugLogs;
+        public static ConfigEntry<bool> ConfigEnableServerDebugLogs;
+        public static ConfigEntry<bool> ConfigEnableBroadcastLogs;
         public static ConfigEntry<bool> ConfigGlobalSwitch;
         public static ConfigEntry<float> ConfigSimulatedPlayers;
         public static ConfigEntry<bool> ConfigEnableShieldScaling;
@@ -31,13 +33,13 @@ namespace StaggerScaler
 
         // The compiler now successfully reads these string inputs without naming conflicts
         internal static readonly ConditionalConfigSyncAPI.ConfigSync configSync =
-            new ConditionalConfigSyncAPI.ConfigSync("babrushkas.staggerscaler", "StaggerScaler", "1.6", minimumRequiredVersion: "1.6", modRequired: true);
+            new ConditionalConfigSyncAPI.ConfigSync("babrushkas.staggerscaler", "StaggerScaler", "1.8", minimumRequiredVersion: "1.8", modRequired: true);
 
         private void Awake()
         {
             Instance = this;
             Log = base.Logger;
-
+           
             UnityEngine.Debug.developerConsoleVisible = false;
             UnityEngine.Debug.developerConsoleEnabled = false;
 
@@ -80,13 +82,20 @@ namespace StaggerScaler
                 "Setting the value to 0.0 result into pure singlplayer HP scaling calculations only.", new AcceptableValueRange<float>(0.0f, 5.0f)),
                 ConditionalConfigSyncAPI.SyncMode.AlwaysServerControlled);
 
-            ConfigEnableDebugLogs = configSync.Bind(Config, "Debug", "EnableLogs", false,
-                "Set to true to print scaling numbers directly into the F5 game console.",
+            ConfigEnableServerDebugLogs = configSync.Bind(Config, "Debug", "1 Enable console output for server", true,
+                "Set to true to print scaling numbers directly into the F5 game console for host player if server hosted via in-game GUI, or to console if server is dedicated server.",
+                ConditionalConfigSyncAPI.SyncMode.AlwaysServerControlled);
+
+            ConfigEnableBroadcastLogs = configSync.Bind(Config, "Debug", "2 Enable broadcast logs to clients", false,
+                "Set to true to allow server/host to broadcast damage numbers to clients.",
+                ConditionalConfigSyncAPI.SyncMode.AlwaysServerControlled);
+
+            ConfigEnableClientDebugLogs = configSync.Bind(Config, "Debug", "3 Enable console output for clients", false,
+                "Set to true to print scaling numbers directly into the F5 game console. Each client can turn it on/off by himself in solo mode, or if broadcast is enabled.\n",
                 ConditionalConfigSyncAPI.SyncMode.AlwaysClientControlled);
 
             _harmonyInstance = new Harmony("com.babrushka.bepinex.staggerscaler");
             _harmonyInstance.PatchAll();
-
             Log.LogInfo("Stagger Scaling Mod Loaded with Config Support!");
         }
 

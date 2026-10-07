@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static UnityEngine.GraphicsBuffer;
+using HarmonyLib;
 
 namespace StaggerScaler
 {
@@ -45,62 +46,114 @@ namespace StaggerScaler
         private const string RpcEventName = "StaggerScaler_ReceiveServerLog";
         private static bool _rpcRegistered = false;
 
+        [HarmonyPatch(typeof(ZNetScene), "Awake")]
+        public static class ZNetScene_Awake_Patch
+        {
+            public static void Postfix()
+            {
+                // Fires safely when the networking scene and routing hashes are ready
+                HelperFunctions.InitNetworkHandlers();
+            }
+        }
         public static void InitNetworkHandlers()
         {
             if (_rpcRegistered) return;
-
+            
             // Clients register this listener to print any message sent directly to them
             ZRoutedRpc.instance.Register<string>(RpcEventName, (sender, message) =>
             {
-                LogToF5Console(message);
+                if (ZNet.instance != null && ZNet.instance.IsServer() )
+                {
+                    if (StaggerScalerPlugin.ConfigEnableServerDebugLogs.Value)
+                    {
+                        LogToF5Console(message);
+                    }
+                }
+                else
+                {
+                    if (StaggerScalerPlugin.ConfigEnableClientDebugLogs.Value)
+                    {
+                        LogToF5Console(message);
+                    }
+                }
+                
             });
 
             _rpcRegistered = true;
         }
 
-        private static long GetCharacterPeerID(Character character)
-        {
-            if (character == null) return 0L;
-
-            ZNetView nview = character.GetComponent<ZNetView>();
-            if (nview != null && nview.IsValid())
-            {
-                // Fetches the data controller and returns the owner UID
-                return nview.GetZDO().GetOwner();
-            }
-
-            return 0L;
-        }
-
         public static void LogToF5Console(Character player, string message)
         {
-            if (!StaggerScalerPlugin.ConfigEnableDebugLogs.Value) return;
+            //if (!StaggerScalerPlugin.ConfigEnableDebugLogs.Value) return;
 
+            // 1. Are we running on the Server (Dedicated or Multiplayer Host)?
             if (ZNet.instance != null && ZNet.instance.IsServer())
             {
-                // IN SP: targetPeerID matches your local UID, executing instantly.
-                // IN MP: Sends the payload securely over the socket ONLY to that peer ID.
-                ZRoutedRpc.instance.InvokeRoutedRPC(player.GetOwner(), RpcEventName, message);
+                // Is the target player a remote client?
+                if (player.GetZDOID().UserID != ZNet.GetUID())
+                {
+
+                    // DEDICATED/COOP SERVER logging remote client action.
+                    if (StaggerScalerPlugin.ConfigEnableServerDebugLogs.Value)
+                    {
+                        LogToF5Console(message);
+                    }
+
+                    //Send to the remote client  his action log over the network
+                    if (StaggerScalerPlugin.ConfigEnableBroadcastLogs.Value)
+                    {
+                        ZRoutedRpc.instance.InvokeRoutedRPC(player.GetZDOID().UserID, RpcEventName, message);
+                    }
+
+                }
+                else
+                {
+                    // HOST SIDE (Local server): The target player is the host themselves.
+                    if (StaggerScalerPlugin.ConfigEnableClientDebugLogs.Value || StaggerScalerPlugin.ConfigEnableServerDebugLogs.Value)
+                    {
+                        LogToF5Console(message);
+                    }
+
+                }
+
             }
+            //client is a remote client, 100% mp mode.
             else
             {
-                // Fallback for purely local execution paths
-                LogToF5Console(message);
+                //print local log.
+                if (StaggerScalerPlugin.ConfigEnableClientDebugLogs.Value)
+                {
+                    LogToF5Console(message);
+                }
+                //ZRoutedRpc.instance.InvokeRoutedRPC(RpcEventName, "3.1" + message);
+                ZRoutedRpc.instance.InvokeRoutedRPC(ZNet.instance.GetServerPeer().m_uid, RpcEventName, message);
+                
+                
+                if (!player.IsOwner())  //idk why IsOwner is true while host is other client. even if it is host-peer (server for a certain area), not GAME HOST itslef.
+                {
+                    //broadcast log 
+                    if (StaggerScalerPlugin.ConfigEnableBroadcastLogs.Value)
+                    {
+                        ZRoutedRpc.instance.InvokeRoutedRPC(player.GetZDOID().UserID, RpcEventName, "4" + message);
+                    }
+                }
             }
+
         }
+
         public static void LogToF5Console(string message)
         {
-            if (!StaggerScalerPlugin.ConfigEnableDebugLogs.Value) return;
-
-            // FIX: Uses the newly added global warning-free static logger bridge
-            if (StaggerScalerPlugin.Log != null)
-            {
-                StaggerScalerPlugin.Log.LogInfo(message);
-            }
-
             if (Console.instance != null)
             {
+                // 1. This prints to the F5 overlay.
+                // 2. BepInEx automatically copies this to your terminal and log file.
                 Console.instance.Print(message);
+            }
+            else if (ZNet.instance != null && ZNet.instance.IsServer() && StaggerScalerPlugin.Log != null)
+            {
+                // FALLBACK: If there is no UI console (like on a dedicated server), 
+                // manually push it to BepInEx so the host logs don't disappear.
+                StaggerScalerPlugin.Log.LogInfo(message);
             }
         }
 
@@ -109,6 +162,7 @@ namespace StaggerScaler
                        $"Vanilla stagger: {oldDmg}, modded stagger: {newDmg}\n" +
                        $"Multiplayer coef (increased by: Game coef/Applied target coef: {MPscale}, difficulty coef: {GameScale};\n" +
                        $"Stagger bar: vailla +{vanillaStagger:F0}% ---> modded +{moddedStagger:F0}%.\n" +
+                       $"Current (after the hit) {mobName}'s stagger is: currentStagger%.\n" + 
                        $"=========================DONE==============================\n";
             DamageContext.LogTracker.AddOrUpdate(p, s);
         }
